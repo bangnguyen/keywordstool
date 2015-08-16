@@ -6,8 +6,8 @@ import utils.Constant._
 
 /**
  * Created by vbang.nguyen@gmail.com on 2/10/15.
+ * A request that adds the User for the current call
  */
-
 trait BaseEntity {
   def getData(option : Int  = FOR_VIEW ): Map[String,Any]
   def toJson : JsValue =  anyToJson(getData())

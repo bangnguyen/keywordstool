@@ -137,26 +137,46 @@ require(['angular', './controllers', './directives', './filters', './services', 
                     return text
                 }
 
-                $scope.updateClipBoard = function (item) {
+                $scope.addToClipBoard = function (item) {
+                    item.selected = true
+                    $scope.keywordsSelectedObject.push(item)
+                    $scope.selectedKeywordsText = $scope.getKeywordsForClipBoard($scope.keywordsSelectedObject)
+                }
+                $scope.removeFromClipBoard = function (item) {
+                    item.selected = false
+                    for (var i = 0; i < $scope.keywordsSelectedObject.length; i++) {
+                        if ($scope.keywordsSelectedObject[i].text == item.text) {
+                            console.log("Remove keyword" + item.text)
+                            $scope.keywordsSelectedObject.splice(i, 1);
+                        }
+                    }
+                    $scope.selectedKeywordsText = $scope.getKeywordsForClipBoard($scope.keywordsSelectedObject)
+
+                }
+
+
+
+
+
+               /* $scope.updateClipBoard = function (item) {
                     // console.log("updateClipBoard");
                     var found = false
                     for (var i = 0; i < $scope.keywordsSelectedObject.length; i++) {
                         if ($scope.keywordsSelectedObject[i].text == item.text) {
                             found = true
-                            // remove
-                            item.is_add = false
+                            console.log("Remove keyword" + item.text)
                             $scope.keywordsSelectedObject.splice(i, 1);
                         }
                     }
                     if (found == false) {
                         //add
-                        item.is_add = true
                         $scope.keywordsSelectedObject.push(item)
+                        console.log("Add keyword" + item.text)
                     }
                     // update ClipBoard
                     $scope.selectedKeywordsText = $scope.getKeywordsForClipBoard($scope.keywordsSelectedObject)
 
-                }
+                }*/
 
 
                 $scope.getClass = function (item) {
@@ -455,7 +475,7 @@ require(['angular', './controllers', './directives', './filters', './services', 
                         data[i]['popularity'] = $scope.toLocaleString(data[i]['popularity'])
                         data[i]['part_not_bold'] = $scope.part_not_bold($scope.keyword, data[i].text)
                         data[i]['part_bold'] = $scope.part_bold($scope.keyword, data[i].text)
-                        data[i]['is_add'] = false
+                        data[i]['selected'] = false
                     }
                     return data
                 }
@@ -504,6 +524,7 @@ require(['angular', './controllers', './directives', './filters', './services', 
 
 
                                     for (var i in $scope.allKeywordsObject) {
+
                                         $scope.addToOrderDict($scope.keyword, $scope.allKeywordsObject[i].text, $scope.allKeywordsObject[i])
                                     }
 
@@ -568,10 +589,14 @@ require(['angular', './controllers', './directives', './filters', './services', 
 
         angular.bootstrap(document, ['myApp']);
         angular.element(document).on('scroll', function () {
-            if (body.scrollTop > 200) {
+            console.log("scrollTop " +$(window).scrollTop())
+
+            if ($(window).scrollTop() > 200) {
                 $("#tr_text_help_pos_fixed").show()
+                $("#selected_keyword").offset({left:$("#selected_keyword").offset().left,top: $("#tr_text_help_pos_fixed").offset().top })
             } else {
                 $("#tr_text_help_pos_fixed").hide()
+                $("#selected_keyword").offset({left:$("#selected_keyword").offset().left,top: $("#all_keyword_container").offset().top })
             }
         });
         $('[data-toggle="tooltip"]').tooltip()
@@ -585,19 +610,5 @@ require(['angular', './controllers', './directives', './filters', './services', 
                 offset: {top:100}
             });
         }
-
-
-       /* if (getDevice() == "mobile") {
-            console.log("show mobi_zone")
-            $("#pc_zone").hide()
-            $("#mobi_zone").show()
-        }
-        else {
-            console.log("show pc_zone")
-            $("#mobi_zone").hide()
-            $("#pc_zone").show()
-        }*/
-
-
     })
 ;

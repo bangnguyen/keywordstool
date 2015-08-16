@@ -1,25 +1,22 @@
 package utils
 
-import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import play.api.libs.json.Json._
-import play.api.libs.json.Reads._
 
 
 import models._
 import scala.collection.Seq
 import play.api.libs.json.JsArray
-import play.api.libs.json.JsSuccess
 import play.api.libs.json.JsString
 import play.api.libs.json.JsBoolean
 import play.api.data.validation.ValidationError
 import play.api.libs.json.JsNumber
 import java.text.SimpleDateFormat
 
+
 /**
  * Created by vbang.nguyen@gmail.com on 2/10/15.
  */
-
 object JsonHelper {
 
   val simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy")

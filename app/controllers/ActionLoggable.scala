@@ -14,6 +14,7 @@ import play.api.Logger
  * Created by vbang.nguyen@gmail.com on 2/10/15.
  * A request that adds the User for the current call
  */
+
 case class RequestIn(uri: String, method: String, remoteAddress: String, queryString: Any = None)
 
 
@@ -45,7 +46,6 @@ trait ActionLoggable extends Controller {
     }
   }
 
-
   def LoggableAction(f: Request[AnyContent] => Result): Action[AnyContent] = Action(parse.anyContent) {
     implicit request => {
       val remoteAddresse = request.remoteAddress
@@ -62,6 +62,7 @@ trait ActionLoggable extends Controller {
         counterValue = Cache.getAs[Int](counter_key).get + 1
         Cache.set(counter_key, counterValue)
       }
+      println("ip " + remoteAddresse + " number " + counterValue)
       if (counterValue > limit) {
         val requestInfo = Json.obj(
           "uri" -> request.uri,

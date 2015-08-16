@@ -58,11 +58,8 @@ div .tr_text_help_pos_fixed{
 
 .pos_ajax_loader {
     position: fixed;
-    top: 150px;
-    right: 43%;
-    color: red;
-    width: 200px;
-    height: 120px;
+    top: 91px;
+    right: 2%;
 }
 
 /* resize images */
@@ -375,9 +372,16 @@ body .row {
     color: red;
 }
 
-div .category_term {
-    width: 36%;
-    margin-left: 32%
+div .keywords_table {
+    width: 31%;
+    margin-left: 21%
+}
+
+div .keywords_selected_table {
+    position: fixed;
+    top:205px;
+    width: 340px;
+    left:60%;
 }
 
 .col1 {
@@ -465,3 +469,13 @@ div .category_term {
     background-color: white;
     width: 80%;
 }*/
+
+
+#selected_keyword_label {
+    width: 100%;
+    text-align: center;
+    height: 29px;
+    font-weight: bold;
+    padding-top: 6px;
+    background-color: hsl(0, 0%, 94%) !important;
+}

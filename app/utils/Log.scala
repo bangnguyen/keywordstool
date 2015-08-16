@@ -3,11 +3,9 @@ package utils
 import play.api.Logger
 import play.api.mvc.RequestHeader
 
-
 /**
  * Created by vbang.nguyen@gmail.com on 2/10/15.
  */
-
 object Log {
   def formatLogString(msg: String)(implicit request: RequestHeader = null) = {
     msg

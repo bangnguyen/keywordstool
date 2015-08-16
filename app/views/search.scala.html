@@ -42,25 +42,23 @@
         </div>
         <br>
 
-        <div id="tr_text_help_pos_fixed"  class="category_term tr_text_help_pos_fixed" style="display: none">
+        <div id="tr_text_help_pos_fixed"  class="keywords_table tr_text_help_pos_fixed" style="display: none">
             <table  class="table table-condensed ">
                 <tr >
                     <th class="col1">Keywords&nbsp<span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Keywords are pulled from the Autocomplete of Google." data-placement="right" ></span></th>
                     <th class="col2">Frequency&nbsp<span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Frequency are pulled from the Keyword planner of Google. Estimated monthly search volume" data-placement="right"></span></th>
-                    <th class="col3"></th>
                 </tr>
             </table>
         </div>
 
 
-        <div >
-            <div id="alphabet_container" ng-if="currentMode=='alphabet'"   ng-show="currentMode=='alphabet' " class="category_term">
+        <div id="all_keyword_container">
+            <div id="alphabet_container" ng-if="currentMode=='alphabet'"   ng-show="currentMode=='alphabet' " class="keywords_table">
                 <div>
-                    <table ng-show="orderKeywords.length >0"  class="table table-condensed ">
+                    <table ng-show="allKeywordsObject.length >0"  class="table table-condensed ">
                         <tr>
                             <th class="col1">Keywords&nbsp<span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Keywords are pulled from the Autocomplete of Google." data-placement="right" ></span></th>
                             <th class="col2">Frequency&nbsp<span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Frequency are pulled from the Keyword planner of Google. Estimated monthly search volume" data-placement="right"></span></th>
-                            <th class="col3"></th>
                         </tr>
                     </table>
                 </div>
@@ -68,54 +66,36 @@
                 <div  id="{{key}}" ng-repeat="key in orderKeywords">
                     <table  class="table table-condensed">
                         <tr><td  ng-class="getKeywordSelected(key)"> <span ng-bind="key" class="span_keyword_group"> </span></td></tr>
-                        <tr ng-repeat="item  in getItemListByKey(key)" ng-class="getClass(item)">
+                        <tr ng-repeat="item  in getItemListByKey(key)"  ng-show="item.selected==false">
                             <td  class="col1"><span ng-bind="item.part_not_bold"> </span><b><span ng-bind="item.part_bold"> </span></b></td>
-                            <td  class="col2" ><span class="popularity" ng-bind="item.popularity"> </span></td>
-                            <td  class="col3">
-                                <div ng-switch on="item.is_add"  ng-click="updateClipBoard(item)" >
-                                    <span class="plus-icon glyphicon glyphicon-plus-sign" ng-switch-when="false" data-toggle="tooltip" title="Add this keyword" data-placement="top" >
-
-                                </span>
-                                    <span class="plus-icon glyphicon glyphicon-remove" ng-switch-default  data-toggle="tooltip" title="Remove this keyword" data-placement="top" >
-                                            <!-- code to render the regular video block -->
-                                    </span>
-                                </div>
+                            <td  class="col2" >
+                                <span class="popularity" ng-bind="item.popularity"> </span>
+                                <span  ng-click="addToClipBoard(item)" class="plus-icon glyphicon glyphicon-plus-sign"  data-toggle="tooltip" title="Add to clipboard" data-placement="top" >     </span>
                             </td>
                         </tr>
                     </table>
                 </div>
-
-
             </div>
 
-            <div id="popularity_container" ng-if="currentMode=='popularity'"   ng-show="currentMode=='popularity'"    class="category_term">
+            <div id="popularity_container" ng-if="currentMode=='popularity'"   ng-show="currentMode=='popularity'"    class="keywords_table">
 
                 <div>
                     <table class="table table-condensed ">
                         <tr>
                             <th class="col1">Keywords&nbsp<span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Keywords are pulled from the Autocomplete of Google." data-placement="right" ></span></th>
                             <th class="col2">Frequency&nbsp<span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Frequency are pulled from the Keyword planner of Google. Estimated monthly search volume" data-placement="right"></span></th>
-                            <th class="col3"></th>
                         </tr>
                     </table>
                 </div>
 
                 <div>
                     <table class="table table-condensed">
-                        <tr ng-repeat="item in allKeywordsObject" ng-class="getClass(item)">
+                        <tr ng-repeat="item in allKeywordsObject"   ng-show="item.selected==false">
                             <td  class="col1"><span ng-bind="item.part_not_bold"> </span><b><span ng-bind="item.part_bold"> </span></b></td>
-                            <td class="col2"><span class="popularity"  ng-bind="item.popularity"> </span></td>
-                            <td  class="col3">
-                                <div ng-switch on="item.is_add"  ng-click="updateClipBoard(item)" >
-                                    <span class="plus-icon glyphicon glyphicon-plus-sign" ng-switch-when="false" data-toggle="tooltip" title="Add this keyword" data-placement="top" >
-
-                                </span>
-                                    <span class="plus-icon glyphicon glyphicon-remove" ng-switch-default  data-toggle="tooltip" title="Remove this keyword" data-placement="top" >
-                                            <!-- code to render the regular video block -->
-                                    </span>
-                                </div>
+                            <td class="col2">
+                                <span class="popularity"  ng-bind="item.popularity"> </span>
+                                <span  ng-click="addToClipBoard(item)" class="plus-icon glyphicon glyphicon-plus-sign"  data-toggle="tooltip" title="Add to clipboard" data-placement="top" >     </span>
                             </td>
-
                         </tr>
                     </table>
                 </div>
@@ -205,3 +185,20 @@
     </div>
 </div>
 
+
+
+<div id ="selected_keyword" class="keywords_selected_table"  ng-show="allKeywordsObject.length >0"  >
+    <div id="selected_keyword_label">
+    <span>
+    Clipboard
+    </span></div>
+    <table  class="table table-condensed" style="display: block;height: 500px;overflow-y: auto">
+        <tr ng-repeat="item  in allKeywordsObject" class="info" ng-show="item.selected==true">
+            <td  class="col1"><span ng-bind="item.part_not_bold"> </span><b><span ng-bind="item.part_bold"> </span></b></td>
+            <td  class="col2" >
+                <span class="popularity" ng-bind="item.popularity"> </span>
+                <span class="plus-icon glyphicon glyphicon-remove" ng-click="removeFromClipBoard(item)" data-toggle="tooltip" title="Remove from Clipboard" data-placement="top" ></span>
+            </td>
+        </tr>
+    </table>
+</div>

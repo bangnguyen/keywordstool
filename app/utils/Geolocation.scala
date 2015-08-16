@@ -5,7 +5,6 @@ import play.api.Play.current
 import play.api.mvc.Request
 import play.api.libs.json.{JsString, Json, JsValue}
 
-
 /**
  * Created by vbang.nguyen@gmail.com on 2/10/15.
  */

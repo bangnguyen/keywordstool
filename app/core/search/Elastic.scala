@@ -9,18 +9,17 @@ import utils.JsonHelper
 import org.elasticsearch.search.sort.SortOrder
 import play.api.Play.current
 
-
-
 /**
  * Created by vbang.nguyen@gmail.com on 2/10/15.
+ * A request that adds the User for the current call
  */
 object Elastic {
 
   val defaultIndex = "english"
-  val hostname =   current.configuration.getString("elastic.host").getOrElse("localhost")
+  val hostname = current.configuration.getString("elastic.host").getOrElse("localhost")
   val elasticClient: ElasticClient = ElasticClient.remote(hostname, 9300)
-  val defaultDocument = "keyword"
   val defaultLimit = 1000
+  val defaultDocument = "keyword"
 
   def url(indexName: String, indexType: String) = indexName + "/" + indexType
 
@@ -31,32 +30,39 @@ object Elastic {
     }
   }
 
+  def store(indexName: String, doctype: String, params: Map[String, Any]): Unit = {
+    elasticClient.execute {
+      index into indexName + "/" + doctype fields params
+    }
+  }
+
+
   def search_keyword(keyword: String, indexName: String): JsValue = {
-    var keyword_clean = keyword.replaceAll(" +"," ")
+    var keyword_clean = keyword.replaceAll(" +", " ")
     try {
       var resp = elasticClient.execute {
         search in indexName types defaultDocument fields("text", "popularity") query {
-          wildcardQuery("text_", "*"+keyword_clean+"*")
+          wildcardQuery("text_", "*" + keyword_clean + "*")
         } from 0 limit defaultLimit sort {
           by field "popularity" order SortOrder.DESC
         }
       }.await
       if (resp.getHits().getTotalHits() < 500 && keyword_clean.split(" ").length > 1) {
-        keyword_clean =  keyword_clean.replace(" ","*")
+        keyword_clean = keyword_clean.replace(" ", "*")
         resp = elasticClient.execute {
           search in indexName types defaultDocument fields("text", "popularity") query {
-            wildcardQuery("text_", "*"+keyword_clean+"*")
+            wildcardQuery("text_", "*" + keyword_clean + "*")
           } from 0 limit defaultLimit sort {
             by field "popularity" order SortOrder.DESC
           }
         }.await
-        println( "*"+keyword_clean+"*")
+        println("*" + keyword_clean + "*")
       }
       convert_to_json(resp)
     } catch {
       case e: Exception => {
-        println(e.getCause())
-        println("Error ")
+        e.printStackTrace()
+        println("loi roi")
         JsNull
       }
     }
