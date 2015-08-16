@@ -1,0 +1,207 @@
+<div >
+    <div id="control_position" class="pos_control_fixed"  ng-show="currentMode=='alphabet'">
+        <div class="control_position_section">
+
+        <span style="float:left" ng-repeat="key in alphabetKeys" class="control_position_character"    ng-click="goToZone(key)" ng-bind="key">
+            </span>
+        </div>
+    </div>
+
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-10  col-xs-offset-2">
+                <br><br>  <br><br>
+                <div class="input-group">
+                    <form class="navbar-form navbar-left" ng-submit="search()">
+                        <input id="keyword" type="text" class="form-control" placeholder="Search"
+                        style="width: 600px"/>
+                        <input type="submit" class="btn btn-search" value="Search"/>
+                        <select ng-model="lang" class="form-control">
+                            <option ng-repeat="lang in languages" value="{{lang}}" ng-bind="convertLang(lang)"></option>
+                        </select>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="row order-section">
+            <br>
+
+            <div id="result_msg" class="message_result_zone"  ng-bind-html="message" ng-show="! calling">
+            </div>
+
+            <div class="order_setting_zone">
+                <span> Order By :</span>
+                <button ng-click="orderBy('alphabet')"  ng-class="getClassOrderBy('alphabet')">   Alphabet</button>
+                <button ng-click="orderBy('popularity')"  ng-class="getClassOrderBy('popularity')">   Search Volume</button>
+
+            </div>
+
+
+        </div>
+        <br>
+
+        <div id="tr_text_help_pos_fixed"  class="category_term tr_text_help_pos_fixed" style="display: none">
+            <table  class="table table-condensed ">
+                <tr >
+                    <th class="col1">Keywords&nbsp<span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Keywords are pulled from the Autocomplete of Google." data-placement="right" ></span></th>
+                    <th class="col2">Frequency&nbsp<span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Frequency are pulled from the Keyword planner of Google. Estimated monthly search volume" data-placement="right"></span></th>
+                    <th class="col3"></th>
+                </tr>
+            </table>
+        </div>
+
+
+        <div >
+            <div id="alphabet_container" ng-if="currentMode=='alphabet'"   ng-show="currentMode=='alphabet' " class="category_term">
+                <div>
+                    <table ng-show="orderKeywords.length >0"  class="table table-condensed ">
+                        <tr>
+                            <th class="col1">Keywords&nbsp<span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Keywords are pulled from the Autocomplete of Google." data-placement="right" ></span></th>
+                            <th class="col2">Frequency&nbsp<span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Frequency are pulled from the Keyword planner of Google. Estimated monthly search volume" data-placement="right"></span></th>
+                            <th class="col3"></th>
+                        </tr>
+                    </table>
+                </div>
+
+                <div  id="{{key}}" ng-repeat="key in orderKeywords">
+                    <table  class="table table-condensed">
+                        <tr><td  ng-class="getKeywordSelected(key)"> <span ng-bind="key" class="span_keyword_group"> </span></td></tr>
+                        <tr ng-repeat="item  in getItemListByKey(key)" ng-class="getClass(item)">
+                            <td  class="col1"><span ng-bind="item.part_not_bold"> </span><b><span ng-bind="item.part_bold"> </span></b></td>
+                            <td  class="col2" ><span class="popularity" ng-bind="item.popularity"> </span></td>
+                            <td  class="col3">
+                                <div ng-switch on="item.is_add"  ng-click="updateClipBoard(item)" >
+                                    <span class="plus-icon glyphicon glyphicon-plus-sign" ng-switch-when="false" data-toggle="tooltip" title="Add this keyword" data-placement="top" >
+
+                                </span>
+                                    <span class="plus-icon glyphicon glyphicon-remove" ng-switch-default  data-toggle="tooltip" title="Remove this keyword" data-placement="top" >
+                                            <!-- code to render the regular video block -->
+                                    </span>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+
+            </div>
+
+            <div id="popularity_container" ng-if="currentMode=='popularity'"   ng-show="currentMode=='popularity'"    class="category_term">
+
+                <div>
+                    <table class="table table-condensed ">
+                        <tr>
+                            <th class="col1">Keywords&nbsp<span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Keywords are pulled from the Autocomplete of Google." data-placement="right" ></span></th>
+                            <th class="col2">Frequency&nbsp<span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Frequency are pulled from the Keyword planner of Google. Estimated monthly search volume" data-placement="right"></span></th>
+                            <th class="col3"></th>
+                        </tr>
+                    </table>
+                </div>
+
+                <div>
+                    <table class="table table-condensed">
+                        <tr ng-repeat="item in allKeywordsObject" ng-class="getClass(item)">
+                            <td  class="col1"><span ng-bind="item.part_not_bold"> </span><b><span ng-bind="item.part_bold"> </span></b></td>
+                            <td class="col2"><span class="popularity"  ng-bind="item.popularity"> </span></td>
+                            <td  class="col3">
+                                <div ng-switch on="item.is_add"  ng-click="updateClipBoard(item)" >
+                                    <span class="plus-icon glyphicon glyphicon-plus-sign" ng-switch-when="false" data-toggle="tooltip" title="Add this keyword" data-placement="top" >
+
+                                </span>
+                                    <span class="plus-icon glyphicon glyphicon-remove" ng-switch-default  data-toggle="tooltip" title="Remove this keyword" data-placement="top" >
+                                            <!-- code to render the regular video block -->
+                                    </span>
+                                </div>
+                            </td>
+
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+
+    </div>
+    <div class="btn-group pos_fixed" role="group">
+        <button data-toggle="tooltip" data-original-title="{{keywordsSelectedObject.length}} keywords copied to clipboard"
+        class="btn btn-sm btn-copy tip-top" ng-click="copySelected()" clip-copy="selectedKeywordsText"
+        role="button" clip-click-fallback="fallback(copy)">Copy ({{keywordsSelectedObject.length}})
+        </button>
+        <button data-toggle="tooltip" data-original-title="{{allKeywordsObject.length}} keywords copied to clipboard"
+        class="btn btn-sm btn-copy  tip-top" ng-click="copyAll()" clip-copy="allKeywordsText" role="button"
+        clip-click-fallback="fallback(copy)">Copy All
+        </button>
+    </div>
+
+    <div class="pos_ajax_loader">
+        <img ng-src="/assets/img/ajax_loader.gif" ng-show="calling"/>
+    </div>
+
+    <span id="top-link-block">
+        <a href="#top" class="well well-sm" onclick="$('html,body').animate({scrollTop:0},'slow');return false;">
+            <i class="glyphicon glyphicon-chevron-up"></i> Back to Top
+        </a>
+    </span>
+
+    <div class="line-separator" ng-style="{width: width_loading}">
+
+            </div>
+
+
+    <div class="footer_description">
+        <div class="footer-description-content">
+            <h3>How to use ? </h3>
+            <ul>
+                <li>Write a term in the search box.</li>
+                <li>Choose the language and submit.</li>
+                <li>Keywordstool takes your search term and adds a letter or a digit in front or behind then extracts suggestions for it .</li>
+                <li>Add each keyword to your clipboard by clicking on the plus sign on its right.</li>
+                <li>Copy the selected keywords or all keywords by clicking the button at the bottom right corner.</li>
+            </ul>
+
+            <h3>About keywords tool ? </h3>
+            <ul>
+                <li>Database contains 40 millions keywords for each language.</li>
+                <li>Up to thousands of relevant long tail keywords for each query. You can order the results by google search volume or alphabetical.</li>
+                <li>No login required.</li>
+                <li>It's free</li>
+            </ul>
+
+            <h3>Contact us</h3>
+            <ul>
+                <li>Any questions or comments feel free to contact <a href="mailto:keywordstool.co@@gmail.com">keywordstool.co@@gmail.com</a>.</li>
+            </ul>
+        </div>
+    </div>
+
+
+    <div class="row footer-section">
+        <div class="col-xs-offset-2 region-footer-first region-footer">
+
+         @*   <div class="footer-first-content" >
+                <div class="social" style="width: 100%; float: right; margin: 15px 0px;">
+                        <!-- Facebook Script -->
+                    <div style="float: left;" id="fb-root"></div>
+                    <script>(function(d, s, id) {
+                    var js, fjs = d.getElementsByTagName(s)[0];
+                    if (d.getElementById(id)) return;
+                    js = d.createElement(s); js.id = id;
+                    js.src = "//connect.facebook.net/en_US/all.js#xfbml=1";
+                    fjs.parentNode.insertBefore(js, fjs);
+                    }(document, 'script', 'facebook-jssdk'));</script>
+                    <div class="fb-comments" data-width="100%" data-height="320" data-href="http://keywordstool.co" data-numposts="5" data-colorscheme="light"></div>
+                </div>
+            </div>*@
+
+        </div>
+        <div class="col-xs-offset-2 region-footer-second region-footer">
+            <div class="footer-second-content">
+                <p>Copyright © 2015 KeywordsTool.co</p>
+            </div>
+        </div>
+    </div>
+</div>
+

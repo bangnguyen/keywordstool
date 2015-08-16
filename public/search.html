@@ -1,0 +1,130 @@
+<div id="control_position" class="pos_control_fixed" >
+    <span style="float:left" ng-repeat="key in alphabetKeys.sort()" class="control_position_character" ng-click="goToZone(key)">
+            {{key.replace(keyword,'')}}
+    </span>
+</div>
+
+
+<div class="container-fluid">
+
+
+
+    <div class="row">
+        <div class="col-xs-10  col-xs-offset-2">
+            <br><br>  <br><br>
+            <div class="input-group">
+                <form class="navbar-form navbar-left" ng-submit="search()">
+                    <input type="text" ng-model="keyword_" class="form-control" placeholder="Search"
+                           style="width: 600px"/>
+                    <input type="submit" class="btn btn-search" value="Search"/>
+                    <select ng-model="lang" class="form-control">
+                        <option ng-repeat="lang in languages" value="{{lang}}">{{convertLang(lang)}}</option>
+                    </select>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <br>
+
+        <div class="col-xs-4 col-xs-offset-8">
+            <span> Order By :</span>
+            <button type="button" ng-click="orderBy('alphabet')" ng-class="getClassOrderBy('alphabet')">
+                <span></span>Alphabet</span>
+            </button>
+            <button type="button" ng-click="orderBy('popularity')" ng-class="getClassOrderBy('popularity')">
+                <span>Search Volume</span>
+            </button>
+        </div>
+
+        <div class="col-xs-offset-4">
+            <div id="result_msg" ng-show="showMessage">
+                Search for keyword {{keyword}} found {{total}} results
+            </div>
+        </div>
+    </div>
+    <br>
+
+    <div id="alphabet_container" class="row" ng-show="currentMode=='alphabet'">
+        <div id="{{key}}" class="category" ng-repeat="key in alphabetKeys.sort()">
+            <div class="item col-xs-4 col-xs-offset-2">
+                <table  class="table table-condensed">
+                    <tr>
+                        <th class="col-xs-3"><b>{{key}}</b></th>
+                        <th class="col-xs-1"><span  data-toggle="tooltip" data-placement="top"
+                                                title="estimated monthly search volume">frequency</span></th>
+                        <th class="col-xs-1"></th>
+                    </tr>
+
+                    <tr ng-repeat="item  in getItemListByKey(key) track by $index" ng-class="getClass(item)">
+                        <td><b>{{part1(item.text)}}</b>{{part2()}}<b>{{part3(item.text)}}</b></td>
+                        <td> {{item.popularity}}</td>
+                        <td><span ng-class="getClassButton(item)" ng-click="updateClipBoard(item)"></span></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div id="popularity_container" class="row" ng-show="items.length >0 && currentMode=='popularity' ">
+        <div class="col-xs-8 col-xs-offset-2">
+            <table class="table table-condensed">
+                <tr>
+                    <th class="col-xs-3"><span data-toggle="tooltip" data-placement="top"
+                                            title="keyword suggestion for your search">keywords</span></th>
+                    <th class="col-xs-1"><span data-toggle="tooltip" data-placement="top"
+                                            title="estimated monthly search volume">frequency</span></th>
+                    <th class="col-xs-1"></th>
+                </tr>
+                <tr ng-repeat="item in items" ng-class="getClass(item)">
+                    <td><b>{{part1(item.text)}}</b>{{part2()}}<b>{{part3(item.text)}}</b></td>
+                    <td> {{item.popularity}}</td>
+                    <td><span ng-class="getClassButton(item)" ng-click="updateClipBoard(item)"></span></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+
+</div>
+<div class="btn-group pos_fixed" role="group">
+    <button data-toggle="tooltip" data-original-title="{{keywordsSelectedObject.length}} keywords copied to clipboard"
+            class="btn btn-sm btn-search tip-top" ng-click="copySelected()" clip-copy="selectedKeywordsText"
+            role="button" clip-click-fallback="fallback(copy)">Copy ({{keywordsSelectedObject.length}})
+    </button>
+    <button data-toggle="tooltip" data-original-title="{{allKeywordsObject.length}} keywords copied to clipboard"
+            class="btn btn-sm btn-search tip-top" ng-click="copyAll()" clip-copy="allKeywordsText" role="button"
+            clip-click-fallback="fallback(copy)">Copy All
+    </button>
+</div>
+
+<div class="pos_ajax_loader">
+    <img ng-src="/assets/img/ajax_loader.gif" ng-show="calling"/>
+</div>
+
+<div class="line-separator" ng-style="{width: width_loading}">
+
+</div>
+
+
+
+
+<div class="row">
+    <div class="col-xs-offset-2">
+        <div>
+            <br><br><br><br>
+            <h1>Why keywordstool is useful ?</h1>
+            <ul>
+                <li><h4>Each language contains the data up to 40 millions long tail keywords. Other language coming soon.</h4></li>
+                <li><h4>Up to  thousands of relevant long tail keywords for each query, order by google search volume by default.</h4></li>
+                <li><h4>Easy to copy only the selected keyword or all keywords by just click in the button at the bottom right corner.</h4></li>
+                <li><h4>No login, no captcha, free and very speed.</h4></li>
+                <li><h4>Any comment or questions, feel free contact to  <a href="mailto:keywordstoolsco@gmail.com">keywordstoolsco@gmail.com</a></h4></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
